@@ -472,16 +472,23 @@
   }
 }
 
-  function render() {
-    document.getElementById('loading').style.display = 'none';
-    const list = document.getElementById('ranking-list');
-    const empty = document.getElementById('empty-state');
+  filteredData.forEach(([nombre, goles]) => {
+  const pos = allData.findIndex(r => r[0] === nombre) + 1;
+  const bono = getBono(goles);
 
-    if (!filteredData.length) {
-      list.style.display = 'none';
-      empty.style.display = 'block';
-      return;
-    }
+  const tieneBono = goles >= 8;
+
+  const posClass = (tieneBono && pos <= 3)
+    ? `pos-${pos}`
+    : '';
+
+  let medal = pos;
+
+  if (tieneBono) {
+    if (pos === 1) medal = '🥇';
+    else if (pos === 2) medal = '🥈';
+    else if (pos === 3) medal = '🥉';
+  }
 
     list.style.display = 'flex';
     empty.style.display = 'none';
