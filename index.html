@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Balón de Oro 2026 – Ranking</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+      --gold:    #D4A017;
+      --gold-lt: #F5C842;
+      --green-dk:#1A3D1F;
+      --green:   #2A6B35;
+      --green-lt:#3D8B4A;
+      --white:   #FAFAF5;
+      --text:    #1C1C1C;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--green-dk);
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    .grass-strip {
+      height: 14px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--green) 0px, var(--green) 22px,
+        var(--green-lt) 22px, var(--green-lt) 44px
+      );
+    }
+
+    /* HERO */
+    header {
+      background: radial-gradient(ellipse at 50% 0%, rgba(212,160,23,.2) 0%, transparent 65%), var(--green-dk);
+      padding: 52px 24px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,160,23,.1);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+
+    .trophy { font-size: 64px; line-height: 1; margin-bottom: 12px; }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(42px, 9vw, 88px);
+      letter-spacing: 3px;
+      color: var(--gold-lt);
+      text-shadow: 0 2px 24px rgba(212,160,23,.4);
+      line-height: 1;
+    }
+    .subtitle {
+      font-size: 15px;
+      color: rgba(250,250,245,.6);
+      margin-top: 10px;
+      letter-spacing: .5px;
+    }
+
+    /* BONOS */
+    .bonos {
+      background: var(--green);
+      padding: 18px 24px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .bono-chip {
+      background: rgba(212,160,23,.15);
+      border: 1px solid rgba(212,160,23,.35);
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold-lt);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bono-chip span { color: rgba(255,255,255,.8); font-weight: 400; }
+
+    /* MAIN */
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 36px 16px 60px;
+    }
+
+    /* STATS */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      color: var(--gold-lt);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: rgba(255,255,255,.45);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    /* SEARCH */
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .search-bar input {
+      flex: 1;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--white);
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .search-bar input::placeholder { color: rgba(255,255,255,.3); }
+    .search-bar input:focus { border-color: var(--gold); }
+    .btn-gold {
+      background: var(--gold);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 22px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--green-dk);
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-gold:hover { background: var(--gold-lt); }
+    .btn-clear {
+      background: rgba(255,255,255,.1);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: var(--white);
+      cursor: pointer;
+    }
+    .btn-clear:hover { background: rgba(255,255,255,.18); }
+
+    /* NOTICES */
+    .setup-notice {
+      background: rgba(212,160,23,.1);
+      border: 1px solid rgba(212,160,23,.3);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--gold-lt);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .setup-notice code {
+      background: rgba(0,0,0,.3);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .error-box {
+      background: rgba(200,50,50,.15);
+      border: 1px solid rgba(200,50,50,.35);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #f99;
+      margin-bottom: 20px;
+    }
+
+    /* RANKING HEADER */
+    .ranking-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .ranking-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 1px;
+      color: var(--gold-lt);
+    }
+    .last-update { font-size: 11px; color: rgba(255,255,255,.35); }
+
+    /* RANKING ROWS */
+    .ranking-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .ranking-row {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 12px;
+      padding: 14px 18px;
+      transition: background .15s, transform .15s;
+    }
+    .ranking-row:hover { background: rgba(255,255,255,.09); transform: translateX(3px); }
+    .ranking-row.pos-1 { background: rgba(212,160,23,.18); border-color: rgba(212,160,23,.5); }
+    .ranking-row.pos-2 { background: rgba(192,192,192,.1);  border-color: rgba(192,192,192,.3); }
+    .ranking-row.pos-3 { background: rgba(176,100,30,.12);  border-color: rgba(176,100,30,.35); }
+
+    .pos-badge {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      text-align: center;
+      color: rgba(255,255,255,.3);
+    }
+    .pos-1 .pos-badge { color: var(--gold-lt); }
+    .pos-2 .pos-badge { color: #C8C8C8; }
+    .pos-3 .pos-badge { color: #CD7832; }
+
+    .asesor-name { font-weight: 600; font-size: 15px; }
+    .bono-tag { font-size: 11px; color: var(--gold-lt); margin-top: 3px; }
+
+    .goles-col { text-align: right; }
+    .goles-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 30px;
+      color: var(--gold-lt);
+      line-height: 1;
+    }
+    .goles-label { font-size: 10px; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .5px; }
+
+    /* STATES */
+    .state-box { text-align: center; padding: 60px 20px; color: rgba(255,255,255,.4); }
+    .state-box .icon { font-size: 48px; margin-bottom: 12px; }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(255,255,255,.1);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer {
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,.22);
+      padding: 0 16px 32px;
+    }
+
+    @media (max-width: 480px) {
+      .stat-num { font-size: 28px; }
+      .asesor-name { font-size: 13px; }
+      .goles-num { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="grass-strip"></div>
+
+<header>
+  <div class="trophy">🏆</div>
+  <h1>Balón de Oro 2026</h1>
+  <p class="subtitle">⚽ Ranking de asesores &nbsp;·&nbsp; Julio – Septiembre 2026</p>
+</header>
+
+<div class="bonos">
+  <div class="bono-chip">🥉 8 pagos únicos <span>→ Bono $1,500</span></div>
+  <div class="bono-chip">🥈 10 pagos únicos <span>→ Bono $3,000</span></div>
+  <div class="bono-chip">🥇 14 pagos únicos <span>→ Bono $4,500</span></div>
+</div>
+
+<div class="grass-strip" style="opacity:.4;"></div>
+
+<main>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" id="stat-asesores">–</div>
+      <div class="stat-label">Asesores</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-total">–</div>
+      <div class="stat-label">Goles totales</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-bono">–</div>
+      <div class="stat-label">Con bono</div>
+    </div>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="🔍  Buscar asesor..." />
+    <button class="btn-gold" onclick="applySearch()">Buscar</button>
+    <button class="btn-clear" onclick="clearSearch()">✕</button>
+  </div>
+
+
+
+  <div class="error-box" id="error-box" style="display:none;"></div>
+
+  <div class="ranking-header">
+    <div class="ranking-title">⚽ Tabla de Posiciones</div>
+    <div class="last-update" id="last-update"></div>
+  </div>
+
+  <div id="loading" class="state-box">
+    <div class="spinner"></div>
+    <p>Cargando ranking...</p>
+  </div>
+
+  <div class="ranking-list" id="ranking-list" style="display:none;"></div>
+
+  <div class="state-box" id="empty-state" style="display:none;">
+    <div class="icon">🔍</div>
+    <p>No se encontró ningún asesor con ese nombre.</p>
+  </div>
+
+</main>
+
+<div class="grass-strip"></div>
+<footer style="margin-top:20px;">
+  Al finalizar septiembre 2026, quien acumule más goles levantará el Balón de Oro 🏆 · Bono especial hasta $4,500 MXN
+  <br>*Solo se toman en cuenta pagos únicos registrados en el formulario y con pago reflejado en SIU.
+</footer>
+
+<script>
+  // ============================================================
+  // ⬇️  PEGA AQUÍ TU URL DE GOOGLE SHEETS PUBLICADO COMO CSV
+  // ============================================================
+  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-ZlBaOBEnu5djCPODVgeV_-0iqCIGex_U5cPLl-75UKAEDxrEBiovqpQ2PnG9Ggwknti0W6nnDOfL/pub?output=csv';
+  // Columnas del Sheet (fila 1 = encabezados):
+  //   A: Nombre del asesor   |   B: Pagos únicos (goles)
+  // ============================================================
+
+  const BONOS = [
+    { min: 14, label: '🥇 Bono $4,500' },
+    { min: 10, label: '🥈 Bono $3,000' },
+    { min:  8, label: '🥉 Bono $1,500' },
+  ];
+
+  function getBono(goles) {
+    return BONOS.find(b => goles >= b.min) || null;
+  }
+
+  const SAMPLE = [
+    ['Luis Hernández',  18],
+    ['María García',    15],
+    ['Carlos López',    14],
+    ['Ana Torres',      12],
+    ['Jorge Martínez',  10],
+    ['Laura Sánchez',    9],
+    ['Roberto Díaz',     8],
+    ['Patricia Flores',  7],
+    ['Miguel Ramírez',   5],
+    ['Sofía Morales',    3],
+  ];
+
+  let allData = [];
+  let filteredData = [];
+
+ 
+
+  function parseCSV(text) {
+    return text.trim().split('\n').slice(1)
+      .map(line => line.split(',').map(c => c.trim().replace(/^"|"$/g, '')))
+      .filter(cols => cols[0])
+      .map(cols => [cols[0], parseInt(cols[1]) || 0]);
+  }
+
+  async function loadData() {
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('ranking-list').style.display = 'none';
+    document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('error-box').style.display = 'none';
+
+    try {
+      if (!SHEET_URL) {
+        allData = [...SAMPLE];
+        document.getElementById('setup-notice').style.display = 'block';
+      } else {
+        const res = await fetch(SHEET_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        allData = parseCSV(await res.text());
+        document.getElementById('setup-notice').style.display = 'none';
+      }
+
+      allData.sort((a, b) => b[1] - a[1]);
+      filteredData = [...allData];
+      render();
+      updateStats();
+
+      document.getElementById('last-update').textContent =
+        'Act. ' + new Date().toLocaleString('es-MX', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+
+    } catch (err) {
+      document.getElementById('error-box').style.display = 'block';
+      document.getElementById('error-box').textContent =
+        '⚠️ No se pudo cargar: ' + err.message + '. Verifica la URL y que el Sheet esté publicado como CSV.';
+      allData = [...SAMPLE];
+      allData.sort((a, b) => b[1] - a[1]);
+      filteredData = [...allData];
+      document.getElementById('setup-notice').style.display = 'block';
+      render();
+      updateStats();
+    }
+  }
+
+  function render() {
+    document.getElementById('loading').style.display = 'none';
+    const list = document.getElementById('ranking-list');
+    const empty = document.getElementById('empty-state');
+
+    if (!filteredData.length) {
+      list.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+
+    list.style.display = 'flex';
+    empty.style.display = 'none';
+    list.innerHTML = '';
+
+    filteredData.forEach(([nombre, goles]) => {
+      const pos = allData.findIndex(r => r[0] === nombre) + 1;
+      const bono = getBono(goles);
+      const posClass = pos <= 3 ? `pos-${pos}` : '';
+      const medal = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : pos;
+
+      const div = document.createElement('div');
+      div.className = `ranking-row ${posClass}`;
+      div.innerHTML = `
+        <div class="pos-badge">${medal}</div>
+        <div>
+          <div class="asesor-name">${nombre}</div>
+          ${bono ? `<div class="bono-tag">${bono.label}</div>` : ''}
+        </div>
+        <div class="goles-col">
+          <div class="goles-num">${goles}</div>
+          <div class="goles-label">goles</div>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  function updateStats() {
+    document.getElementById('stat-asesores').textContent = allData.length;
+    document.getElementById('stat-total').textContent = allData.reduce((s, r) => s + r[1], 0);
+    document.getElementById('stat-bono').textContent = allData.filter(r => r[1] >= 8).length;
+  }
+
+  function applySearch() {
+    const q = document.getElementById('search-input').value.toLowerCase().trim();
+    filteredData = q ? allData.filter(r => r[0].toLowerCase().includes(q)) : [...allData];
+    render();
+  }
+
+  function clearSearch() {
+    document.getElementById('search-input').value = '';
+    filteredData = [...allData];
+    render();
+  }
+
+  document.getElementById('search-input').addEventListener('keypress', e => {
+    if (e.key === 'Enter') applySearch();
+  });
+
+  window.addEventListener('load', loadData);
+</script>
+</body>
+</html>
