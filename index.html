@@ -490,8 +490,17 @@
     filteredData.forEach(([nombre, goles]) => {
       const pos = allData.findIndex(r => r[0] === nombre) + 1;
       const bono = getBono(goles);
-      const posClass = pos <= 3 ? `pos-${pos}` : '';
-      const medal = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : pos;
+      let medal = pos;
+
+      if (goles >= 8) {
+        if (pos === 1) medal = '🥇';
+        else if (pos === 2) medal = '🥈';
+        else if (pos === 3) medal = '🥉';
+      }
+      
+      const posClass = (goles >= 8 && pos <= 3)
+        ? `pos-${pos}`
+        : '';
 
       const div = document.createElement('div');
       div.className = `ranking-row ${posClass}`;
