@@ -404,12 +404,10 @@
     try {
       if (!SHEET_URL) {
         allData = [...SAMPLE];
-        document.getElementById('setup-notice').style.display = 'block';
       } else {
         const res = await fetch(SHEET_URL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         allData = parseCSV(await res.text());
-        document.getElementById('setup-notice').style.display = 'none';
       }
 
       allData.sort((a, b) => b[1] - a[1]);
