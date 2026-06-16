@@ -389,47 +389,88 @@
  
 
   function parseCSV(text) {
-    return text.trim().split('\n').slice(1)
-      .map(line => line.split(',').map(c => c.trim().replace(/^"|"$/g, '')))
-      .filter(cols => cols[0])
-      .map(cols => [cols[0], parseInt(cols[1]) || 0]);
-  }
+  return text
+    .trim()
+    .split(/\r?\n/)
+    .slice(1)
+    .map(line => {
+      const cols = line.split(',');
+
+      return [
+        cols[0]?.trim().replace(/^"|"$/g, ''),
+        parseInt(cols[1]) || 0
+      ];
+    })
+    .filter(row => row[0]);
+}
 
   async function loadData() {
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('ranking-list').style.display = 'none';
-    document.getElementById('empty-state').style.display = 'none';
-    document.getElementById('error-box').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('ranking-list').style.display = 'none';
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('error-box').style.display = 'none';
 
-    try {
-      if (!SHEET_URL) {
-        allData = [...SAMPLE];
-      } else {
-        const res = await fetch(SHEET_URL);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        allData = parseCSV(await res.text());
+  try {
+
+    if (!SHEET_URL) {
+      allData = [...SAMPLE];
+
+    } else {
+
+      const res = await fetch(SHEET_URL);
+
+      console.log('Status:', res.status);
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
       }
 
-      allData.sort((a, b) => b[1] - a[1]);
-      filteredData = [...allData];
-      render();
-      updateStats();
+      const texto = await res.text();
 
-      document.getElementById('last-update').textContent =
-        'Act. ' + new Date().toLocaleString('es-MX', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+      console.log('CSV recibido:');
+      console.log(texto);
 
-    } catch (err) {
-      document.getElementById('error-box').style.display = 'block';
-      document.getElementById('error-box').textContent =
-        '⚠️ No se pudo cargar: ' + err.message + '. Verifica la URL y que el Sheet esté publicado como CSV.';
-      allData = [...SAMPLE];
-      allData.sort((a, b) => b[1] - a[1]);
-      filteredData = [...allData];
-      document.getElementById('setup-notice').style.display = 'block';
-      render();
-      updateStats();
+      allData = parseCSV(texto);
+
+      console.log('Datos procesados:');
+      console.log(allData);
     }
+
+    allData.sort((a, b) => b[1] - a[1]);
+
+    filteredData = [...allData];
+
+    render();
+    updateStats();
+
+    document.getElementById('last-update').textContent =
+      'Act. ' +
+      new Date().toLocaleString('es-MX', {
+        day: '2-digit',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+  } catch (err) {
+
+    console.error('ERROR COMPLETO:', err);
+
+    document.getElementById('error-box').style.display = 'block';
+
+    document.getElementById('error-box').textContent =
+      '⚠️ No se pudo cargar: ' + err.message;
+
+    allData = [...SAMPLE];
+
+    allData.sort((a, b) => b[1] - a[1]);
+
+    filteredData = [...allData];
+
+    render();
+    updateStats();
   }
+}
 
   function render() {
     document.getElementById('loading').style.display = 'none';
