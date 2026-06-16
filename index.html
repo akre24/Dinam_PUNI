@@ -472,59 +472,63 @@
   }
 }
 
-  filteredData.forEach(([nombre, goles]) => {
-  const pos = allData.findIndex(r => r[0] === nombre) + 1;
-  const bono = getBono(goles);
+  function render() {
 
-  const tieneBono = goles >= 8;
+  document.getElementById('loading').style.display = 'none';
 
-  const posClass = (tieneBono && pos <= 3)
-    ? `pos-${pos}`
-    : '';
+  const list = document.getElementById('ranking-list');
+  const empty = document.getElementById('empty-state');
 
-  let medal = pos;
-
-  if (tieneBono) {
-    if (pos === 1) medal = '🥇';
-    else if (pos === 2) medal = '🥈';
-    else if (pos === 3) medal = '🥉';
+  if (!filteredData.length) {
+    list.style.display = 'none';
+    empty.style.display = 'block';
+    return;
   }
 
-    list.style.display = 'flex';
-    empty.style.display = 'none';
-    list.innerHTML = '';
+  list.style.display = 'flex';
+  empty.style.display = 'none';
+  list.innerHTML = '';
 
-    filteredData.forEach(([nombre, goles]) => {
-      const pos = allData.findIndex(r => r[0] === nombre) + 1;
-      const bono = getBono(goles);
-      let medal = pos;
+  filteredData.forEach(([nombre, goles]) => {
 
-      if (goles >= 8) {
-        if (pos === 1) medal = '🥇';
-        else if (pos === 2) medal = '🥈';
-        else if (pos === 3) medal = '🥉';
-      }
-      
-      const posClass = (goles >= 8 && pos <= 3)
+    const pos = allData.findIndex(r => r[0] === nombre) + 1;
+
+    const bono = getBono(goles);
+
+    let medal = pos;
+
+    if (goles >= 8) {
+      if (pos === 1) medal = '🥇';
+      else if (pos === 2) medal = '🥈';
+      else if (pos === 3) medal = '🥉';
+    }
+
+    const posClass =
+      (goles >= 8 && pos <= 3)
         ? `pos-${pos}`
         : '';
 
-      const div = document.createElement('div');
-      div.className = `ranking-row ${posClass}`;
-      div.innerHTML = `
-        <div class="pos-badge">${medal}</div>
-        <div>
-          <div class="asesor-name">${nombre}</div>
-          ${bono ? `<div class="bono-tag">${bono.label}</div>` : ''}
-        </div>
-        <div class="goles-col">
-          <div class="goles-num">${goles}</div>
-          <div class="goles-label">goles</div>
-        </div>
-      `;
-      list.appendChild(div);
-    });
-  }
+    const div = document.createElement('div');
+
+    div.className = `ranking-row ${posClass}`;
+
+    div.innerHTML = `
+      <div class="pos-badge">${medal}</div>
+
+      <div>
+        <div class="asesor-name">${nombre}</div>
+        ${bono ? `<div class="bono-tag">${bono.label}</div>` : ''}
+      </div>
+
+      <div class="goles-col">
+        <div class="goles-num">${goles}</div>
+        <div class="goles-label">goles</div>
+      </div>
+    `;
+
+    list.appendChild(div);
+  });
+}
 
   function updateStats() {
     document.getElementById('stat-asesores').textContent = allData.length;
